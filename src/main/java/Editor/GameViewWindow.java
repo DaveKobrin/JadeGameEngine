@@ -31,8 +31,8 @@ public class GameViewWindow {
     private static void setViewportScreenPos(ImVec2 localPos) {
         ImVec2 topLeft = new ImVec2();
         ImGui.getCursorScreenPos(topLeft);
-        topLeft.x -= ImGui.getScrollX();
-        topLeft.y -= ImGui.getScrollY();
+        topLeft.x -= ImGui.getScrollX() + 10;
+        topLeft.y -= ImGui.getScrollY() + 40;
 
         viewportScreenPos = new ImVec2(topLeft.x + localPos.x, topLeft.y + localPos.y);
 
@@ -69,8 +69,8 @@ public class GameViewWindow {
         //get ImGui available size
         ImVec2 availableSize = new ImVec2();
         ImGui.getContentRegionAvail(availableSize);
-        availableSize.x -= ImGui.getScrollX();
-        availableSize.y -= ImGui.getScrollY();
+        availableSize.x -= ImGui.getScrollX() - 16;
+        availableSize.y -= ImGui.getScrollY() - 60;
 
         ImVec2 viewPos = new ImVec2((availableSize.x / 2f) - (viewportSize.x / 2f), (availableSize.y / 2f) - (viewportSize.y / 2f));
 

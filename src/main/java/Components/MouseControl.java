@@ -38,8 +38,8 @@ public class MouseControl extends Component {
             Window.getScene().addGameObject2Scene(go);
         }
         if (objectHeld != null) {
-            Vector2f newPos = new Vector2f(MouseListener.getOrthoX(), MouseListener.getOrthoY());
-//            Vector2f newPos = new Vector2f(MouseListener.getViewportOrthoX(), MouseListener.getViewportOrthoY());
+//            Vector2f newPos = new Vector2f(MouseListener.getOrthoX(), MouseListener.getOrthoY());
+            Vector2f newPos = new Vector2f(MouseListener.getViewportOrthoX(), MouseListener.getViewportOrthoY());
             newPos.x = ((int)newPos.x / Settings.TILE_WIDTH) * Settings.TILE_WIDTH;
             newPos.y = ((int)newPos.y / Settings.TILE_HEIGHT) * Settings.TILE_HEIGHT;
 //            System.out.println(newPos);

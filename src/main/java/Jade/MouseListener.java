@@ -108,36 +108,36 @@ public class MouseListener {
         return currYVec4.y;
     }
 
-//    /**
-//     * getViewportOrthoX() - get current mouse X pos in world coordinates
-//     * @return mouse X pos converted from screen coordinates to world coordinates
-//     */
-//    public static float getViewportOrthoX() {
-//        float currX = getX() - GameViewWindow.getViewportPosX();
-//        float currXNormalized = (currX/GameViewWindow.getViewportSizeX()) * 2.0f -1.0f;
-//
-//        Vector4f currXVec4 = new Vector4f( currXNormalized, 0, 0, 1);
-//        Matrix4f invProjMat = new Matrix4f(Window.getScene().getCamera().getInvProjMatrix());
-//        Matrix4f invViewMat = new Matrix4f(Window.getScene().getCamera().getInvViewMatrix());
-//        currXVec4.mul(invProjMat).mul(invViewMat);
-//        return currXVec4.x;
-//    }
-//
-//    /**
-//     * getViewportOrthoY() - get current mouse X pos in world coordinates
-//     * @return mouse X pos converted from screen coordinates to world coordinates
-//     */
-//    public static float getViewportOrthoY() {
-//        float currY = getY() - GameViewWindow.getViewportPosY();
-//        float currYNormalized = -((currY/GameViewWindow.getViewportSizeY()) * 2.0f -1.0f);
-//        Vector4f currYVec4 = new Vector4f( 0, currYNormalized, 0, 1);
-//
-//        Matrix4f invProjMat = new Matrix4f(Window.getScene().getCamera().getInvProjMatrix());
-//        Matrix4f invViewMat = new Matrix4f(Window.getScene().getCamera().getInvViewMatrix());
-//        currYVec4.mul(invProjMat).mul(invViewMat);
-////      currYVec4.mul(Window.getScene().getCamera().getInvProjMatrix()).mul(Window.getScene().getCamera().getInvViewMatrix());
-//        return currYVec4.y;
-//    }
+    /**
+     * getViewportOrthoX() - get current mouse X pos in world coordinates
+     * @return mouse X pos converted from screen coordinates to world coordinates
+     */
+    public static float getViewportOrthoX() {
+        float currX = getX() - GameViewWindow.getViewportPosX();
+        float currXNormalized = (currX/GameViewWindow.getViewportSizeX()) * 2.0f -1.0f;
+
+        Vector4f currXVec4 = new Vector4f( currXNormalized, 0, 0, 1);
+        Matrix4f invProjMat = new Matrix4f(Window.getScene().getCamera().getInvProjMatrix());
+        Matrix4f invViewMat = new Matrix4f(Window.getScene().getCamera().getInvViewMatrix());
+        currXVec4.mul(invProjMat).mul(invViewMat);
+        return currXVec4.x;
+    }
+
+    /**
+     * getViewportOrthoY() - get current mouse X pos in world coordinates
+     * @return mouse X pos converted from screen coordinates to world coordinates
+     */
+    public static float getViewportOrthoY() {
+        float currY = getY() - GameViewWindow.getViewportPosY();
+        float currYNormalized = -((currY/GameViewWindow.getViewportSizeY()) * 2.0f -1.0f);
+        Vector4f currYVec4 = new Vector4f( 0, currYNormalized, 0, 1);
+
+        Matrix4f invProjMat = new Matrix4f(Window.getScene().getCamera().getInvProjMatrix());
+        Matrix4f invViewMat = new Matrix4f(Window.getScene().getCamera().getInvViewMatrix());
+        currYVec4.mul(invProjMat).mul(invViewMat);
+//      currYVec4.mul(Window.getScene().getCamera().getInvProjMatrix()).mul(Window.getScene().getCamera().getInvViewMatrix());
+        return currYVec4.y;
+    }
 
     public static float getX() {
         return (float)(get().xPos);

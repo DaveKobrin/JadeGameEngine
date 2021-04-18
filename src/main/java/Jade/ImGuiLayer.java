@@ -35,7 +35,7 @@ public class ImGuiLayer {
         // Must create context before any other ImGui calls
         ImGui.createContext();
         ImGui.getIO().setIniFilename("imGui.ini");
-//        ImGui.getIO().setConfigFlags(ImGuiConfigFlags.DockingEnable);
+        ImGui.getIO().setConfigFlags(ImGuiConfigFlags.DockingEnable);
         ImFontAtlas imFontAtlas = ImGui.getIO().getFonts();
 
         imFontDefault = imFontAtlas.addFontDefault();
@@ -87,7 +87,7 @@ public class ImGuiLayer {
         ImGui.pushFont(imFontTest);
         currentScene.objectImGui();
         currentScene.imGui();
-//        GameViewWindow.imgui();
+        GameViewWindow.imgui();
         ImGui.popFont();
     }
 
@@ -101,12 +101,12 @@ public class ImGuiLayer {
 //    }
     protected void preProcess() {
         //setup docking
-//        setupDockspace();
+        setupDockspace();
     }
 
     protected void postProcess() {
         //end docking ImGui window
-//        ImGui.end();
+        ImGui.end();
     }
 
     private void setupDockspace() {
@@ -126,12 +126,12 @@ public class ImGuiLayer {
         ImGui.begin("Dockspace", new ImBoolean(true), windowFlags);
         ImGui.popStyleVar(2);
 // -------------debug testing
-        ImVec2 availableSize = new ImVec2();
-        ImGui.getContentRegionAvail(availableSize);
-
-        ImVec2 currPos = new ImVec2();
-        ImGui.getCursorScreenPos(currPos);
-        System.out.println("dockspace window dim from (" + currPos.x + ", " + currPos.y + " ) to (" + availableSize.x +", " + availableSize.y + ")");
+//        ImVec2 availableSize = new ImVec2();
+//        ImGui.getContentRegionAvail(availableSize);
+//
+//        ImVec2 currPos = new ImVec2();
+//        ImGui.getCursorScreenPos(currPos);
+//        System.out.println("dockspace window dim from (" + currPos.x + ", " + currPos.y + " ) to (" + availableSize.x +", " + availableSize.y + ")");
 //----------------------------test end
 
         //dockspace

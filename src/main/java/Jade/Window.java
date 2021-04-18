@@ -216,7 +216,7 @@ public class Window {
         dt = -1.0f;
 
         while(!glfwWindowShouldClose(glfwWindow)) {
-//            this.framebuffer.bind();    //render scene to framebuffer
+            this.framebuffer.bind();    //render scene to framebuffer
             startFrame();
             DebugDrawBatch.beginFrame();
 
