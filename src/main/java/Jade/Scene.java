@@ -1,10 +1,29 @@
 package Jade;
 
+import Components.MouseControl;
+import Components.SpriteRenderer;
 import Renderer.Renderer;
+import Utility.AssetPool;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import imgui.ImGui;
+import lombok.Getter;
+import lombok.Setter;
+import org.joml.Vector2f;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Scene - Parent class for a level. Everything that exists in the game world
+ *         is part of the scene all of the GameObjects, camera, renderer, etc.
+ *         Children may be playable levels, or the level editor for example.
+ */
 public abstract class Scene {
 
     public Scene(){}
@@ -12,17 +31,39 @@ public abstract class Scene {
     protected Renderer renderer;
     protected Camera camera;
     private boolean isRunning = false;
+    protected GameObject activeGameObject = null;
+    protected boolean levelLoaded = false;
+    @Getter     @Setter
+    protected String levelFileName = "";
     protected List<GameObject> gameObjects = new ArrayList<>();
 
-
-    public abstract void update(float dt);
-
-    public void init() {
-        /* Base does no initialization...
-         * subclasses should override with any init code
-         */
+    /**
+     * update(dt) - called every frame and in turn calls update(dt) on all
+     *              GameObjects.
+     * @param dt - (delta time) - float representing milliseconds elapsed since last
+     *             frame.
+     */
+    public void update(float dt) {
+        for (GameObject go : this.gameObjects) {
+            go.update(dt);
+        }
+        this.renderer.render();
     }
 
+    /**
+     * init() - initialize variables - children may override fore specific needs, but must
+     *          create these instances or call back to this method
+     */
+    public void init() {
+        this.camera = new Camera(new Vector2f());
+        this.renderer = new Renderer();
+        loadResources();
+    }
+
+    /**
+     * start() - change game state to running and call the start() method for all
+     *           GameObjects.
+     */
     public void start() {
         this.isRunning = true;
         for (GameObject go : gameObjects) {
@@ -30,6 +71,19 @@ public abstract class Scene {
         }
     }
 
+    /**
+     * loadResources() - add all assets for the scene to the asset pool.
+     *                   Should be overridden by child classes if assets are used.
+     */
+    protected void loadResources() {
+        //override with scene specific resources
+    }
+
+    /**
+     * addGameObject2Scene(go) - adds the GameObject into the scene and calls its start()
+     *                           if needed.
+     * @param go - the GameObject to add.
+     */
     public void addGameObject2Scene(GameObject go) {
         this.gameObjects.add(go);
         this.renderer.add(go);
@@ -42,4 +96,78 @@ public abstract class Scene {
     public Camera getCamera() {
         return this.camera;
     }
+
+    /**
+     * sceneImGui() - process UI items specific to the active GameObject
+     */
+    public void objectImGui() {
+        //process GameObject specific GUI items
+        if (activeGameObject != null) {
+            ImGui.begin("Insepector");
+            activeGameObject.imGui();
+            ImGui.end();
+        }
+    }
+
+    /**
+     * imGui() - process UI items specific to the scene
+     */
+    public void imGui() {
+        /* Base class does nothing here.
+         * subclasses can override for
+         * scene level gui code
+         */
+    }
+
+    public void load() {
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .create();
+        String inFile = "";
+        try {
+            inFile = new String(Files.readAllBytes(Paths.get(levelFileName)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (!inFile.equals("")) {
+
+            int maxGoUID = -1;
+            int maxCompUID = -1;
+
+            GameObject[] objects = gson.fromJson(inFile,GameObject[].class);
+            for (int i = 0; i < objects.length; i++) {
+                if (objects[i].getComponent(SpriteRenderer.class) != null) {
+                    SpriteRenderer spriteRen = objects[i].getComponent(SpriteRenderer.class);
+                    if (spriteRen.getTexture() != null) {
+                        spriteRen.setTexture(AssetPool.getTexture(spriteRen.getTexture().getFilepath()));
+                    }
+                }
+                addGameObject2Scene(objects[i]);
+
+                if (objects[i].getUid() > maxGoUID)
+                    maxGoUID = objects[i].getUid();
+                if (objects[i].getMaxCompUID() > maxCompUID)
+                    maxCompUID = objects[i].getUid();
+            }
+
+            GameObject.setIdCounter(++maxGoUID);
+            Component.setIdCounter(++maxCompUID);
+
+            this.levelLoaded = true;
+        }
+    }
+
+    public void save() {
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .create();
+
+       try (FileWriter outfile = new FileWriter(new File(levelFileName),false)){
+           outfile.write(gson.toJson(this.gameObjects));
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
+    }
+
 }

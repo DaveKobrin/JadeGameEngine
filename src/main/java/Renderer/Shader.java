@@ -12,6 +12,9 @@ import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
 
+/**
+ * Shader - manage shader program for GPU
+ */
 public class Shader {
     private int shaderProgramID;
     private String vertexSrc;
@@ -28,10 +31,9 @@ public class Shader {
             e.printStackTrace();
             assert false : "Error could not open file for shader : '" + filepath +"'";
         }
+        //sections of shader code headed by #type fragment or #type vertex etc.
         String[] splitString = source.split("(#type)( )+([a-zA-Z]+)");
-        if (splitString.length < 2) {
-            assert false : "Error shader '" + filepath + "' is not a valid shader";
-        }
+        assert splitString.length >= 2 : "Error shader '" + filepath + "' is not a valid shader";
         String[] shadertype = new String[splitString.length-1];
         int count = 1;
         int startPos = 0;
@@ -120,6 +122,7 @@ public class Shader {
         beingUsed = false;
     }
 
+    // utility methods to send data to the shader program on the GPU
     public void uploadMat4f(String varName, Matrix4f mat4) {
         use();
         int varLocation = glGetUniformLocation(shaderProgramID, varName);

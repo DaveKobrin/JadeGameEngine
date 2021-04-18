@@ -1,6 +1,11 @@
-package Jade;
+package scenes;
 
-public class LevelScene extends Scene{
+import Jade.Scene;
+
+/**
+ * LevelScene - a game level
+ */
+public class LevelScene extends Scene {
 
     public LevelScene() {
 

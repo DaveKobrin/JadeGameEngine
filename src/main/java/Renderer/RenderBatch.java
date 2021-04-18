@@ -15,6 +15,10 @@ import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
+/**
+ * RenderBatch - maintains a collection of sprites to send to the GPU in a single upload
+ *               this is for improved performance over single draw calls
+ */
 public class RenderBatch implements Comparable<RenderBatch> {
     /*===================
      *  VERTEX LAYOUT
@@ -36,7 +40,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
     private final int VERTEX_SIZE = POS_SIZE  + COLOR_SIZE + TEX_COORDS_SIZE + TEX_ID_SIZE;
     private final int VERTEX_SIZE_BYTES = VERTEX_SIZE * Float.BYTES;
 
-    private final int MAX_TEXTURES = 16; // reserve texture slot 0 for null
+    private final int MAX_TEXTURES = 16; // reserve texture slot 0 for null texture
     private final int[] TEXTURE_SLOTS = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 
     private SpriteRenderer[] sprites;
@@ -147,6 +151,12 @@ public class RenderBatch implements Comparable<RenderBatch> {
         shader.detach();
     }
 
+    /**
+     * addSprite(sprite) - adds SpriteRenderer to this batch.
+     *                   !!! caller must ensure sprite can be added to this batch !!!
+     *                   !!! will assert false if there is not room !!!
+     * @param sprite - SpriteRenderer to add to the batch.
+     */
     public void addSprite(SpriteRenderer sprite) {
         // get index and add renderObject
         if (this.hasRoom && hasTexRoom(sprite.getTexture())) {
@@ -178,7 +188,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
         int texID = 0;
         if (sprite.getTexture() != null) {
             for (texID = 1; texID < this.textures.size() ; texID++) {
-                if (this.textures.get(texID) == sprite.getTexture()) {
+                if (this.textures.get(texID).equals(sprite.getTexture())) {
                     break;
                 }
             }
@@ -287,6 +297,13 @@ public class RenderBatch implements Comparable<RenderBatch> {
         return this.zIndex;
     }
 
+    /**
+     * compareTo(o) - comparable based on zIndex
+     * @param o - another RenderBatch to compare with.
+     * @return - 0 if this.zIndex == o.zIndex
+     *           - if this.zIndex < o.zIndex
+     *           + if this.zIndex > o.zIndex
+     */
     @Override
     public int compareTo(RenderBatch o) {
         return Integer.compare(this.zIndex, o.zIndex);

@@ -1,5 +1,6 @@
 package Renderer;
 
+import lombok.Getter;
 import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
@@ -8,13 +9,44 @@ import java.nio.IntBuffer;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.stb.STBImage.*;
 
+/**
+ * Texture - an image sent to the GPU for use with the shader
+ */
 public class Texture {
+    @Getter
     private String filepath;
-    private int texID;
+    @Getter
+    private transient int texID;
+    @Getter
     private int width;
+    @Getter
     private int height;
 
-    public Texture(String filepath) {
+    public Texture() {
+        //required default constructor to allow serialization, but will be unusable until after init
+        //had to explicitly add this to allow for framebuffer Texture construction
+        this.filepath = "INVALID";
+        this.texID = -1;
+        this.width = -1;
+        this.height = -1;
+    }
+
+    public Texture(int width, int height) {
+        //constructor for framebuffer
+        this.filepath = "Generated";
+
+        //generate texture on GPU
+        texID = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, texID);
+        //when stretching, blur
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        //when shrinking, blur
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+    }
+
+    public void init( String filepath ) {
         this.filepath = filepath;
 
         //generate texture on GPU
@@ -59,7 +91,6 @@ public class Texture {
         //free stbi memory
         stbi_image_free(image);
     }
-
     public void bind() {
         glBindTexture(GL_TEXTURE_2D, texID);
     }
@@ -68,11 +99,18 @@ public class Texture {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    public int getWidth() {
-        return this.width;
+    @Override
+    public boolean equals(Object obj) {
+        // if obj is nothing or not a Texture return immediately
+        if (obj == null)
+            return false;
+        if (!(obj instanceof Texture))
+            return false;
+
+        //cast to Texture and compare all data
+        Texture tex = (Texture) obj;
+        return (tex.getWidth() == this.getWidth() && tex.getHeight() == this.getHeight() &&
+                tex.getTexID() == this.getTexID() && tex.getFilepath().equals(this.getFilepath()));
     }
 
-    public int getHeight() {
-        return this.height;
-    }
 }

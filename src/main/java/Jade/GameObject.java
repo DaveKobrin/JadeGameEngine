@@ -1,24 +1,31 @@
 package Jade;
 
+import com.google.gson.annotations.JsonAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * GameObject - An object in the game world. Maintains its position, scale, name, and all
+ *              of its components
+ */
+@JsonAdapter(Utility.GsonGameObjectTypeAdapter.class)
 public class GameObject {
+
+    private static int ID_COUNTER = 0; //generate unique universal id (uid) for each game object
+    private int uid = -1;   //the universal ID for this game object
+
     private String name;
-    private List<Component> components = new ArrayList<>();
     protected Transform transform;
     private int zIndex = 0;
+    private List<Component> components = new ArrayList<>();
 
-    public GameObject(String name) {
-        this.name = name;
-        this.transform = new Transform();
-        this.zIndex = 0;
-    }
 
     public GameObject(String name, Transform transform, int zIndex) {
         this.name = name;
         this.transform = new Transform(transform);
         this.zIndex = zIndex;
+        this.uid = ID_COUNTER++;
     }
     public <T extends Component> T getComponent(Class<T> componentClass) {
         for (Component c : components) {
@@ -46,19 +53,26 @@ public class GameObject {
     }
 
     public void addComponent(Component c) {
+        c.generateUID();
         this.components.add(c);
         c.gameObject = this;
     }
 
     public void update(float dt) {
-        for (int i=0; i<this.components.size(); ++i) {
-            this.components.get(i).update(dt);
+        for (Component component : this.components) {
+            component.update(dt);
         }
     }
 
     public void start() {
-        for (int i=0; i<this.components.size(); ++i) {
-            this.components.get(i).start();
+        for (Component component : this.components) {
+            component.start();
+        }
+    }
+
+    public void imGui() {
+        for (Component c : components) {
+            c.imGui();
         }
     }
 
@@ -71,6 +85,22 @@ public class GameObject {
     }
 
     public void setzIndex(int zIndex) {
+        //TODO must move associated sprite to different render batch with correct z index
         this.zIndex = zIndex;
+    }
+
+    public static void setIdCounter(int newMinCounter) {
+        ID_COUNTER = newMinCounter;
+    }
+
+    public int getUid() { return this.uid; }
+
+    public int getMaxCompUID() {
+        int maxCompUID = -1;
+        for (Component c : components) {
+            if (c.getUid() > maxCompUID)
+                maxCompUID = c.getUid();
+        }
+        return maxCompUID;
     }
 }

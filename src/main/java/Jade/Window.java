@@ -1,14 +1,18 @@
 package Jade;
 
+import Renderer.DebugDrawBatch;
+import Renderer.Framebuffer;
 import Utility.Color;
 import lombok.Data;
-import org.lwjgl.Version;
+import lombok.Getter;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
+import scenes.LevelEditorScene;
+import scenes.LevelScene;
 
 import java.nio.IntBuffer;
 import java.util.Objects;
@@ -17,6 +21,9 @@ import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
+/**
+ * Window - creates and manages the single instance of the openGL window
+ */
 public class Window {
     @Data
     public class Configuration {
@@ -28,27 +35,35 @@ public class Window {
         /**
          *  Window Width and Height
          */
-        private int width = 1600;
-        private int height = 900;
+        private int width = 1920;
+        private int height = 1080;
 
         /**
          *  Window state flags
          */
         private boolean fullScreen = false;
-    }
-    private Configuration config;
-    private Color colorBg = new Color(0.3f, 0.3f, 0.3f, 1.0f);
 
+    }
+
+    private Configuration config;
+    private Color colorBg = Color.COLORS.MID_GRAY.getAsColor();
+
+    //used to calculate delta time (dt) - elapsed time between frames in millis
     private float beginTime;
     private float endTime;
     private float dt;
 
+    //window instance and handle
     private static Window window = null;
     private long glfwWindow;
-    private String glslVersion = null;
 
+    //imgui
+    private String glslVersion = null;
     private ImGuiLayer imGuiLayer;
+
     private static Scene currentScene = null;
+    @Getter
+    private Framebuffer framebuffer;
 
     private Window() {
         config = new Configuration();
@@ -66,6 +81,7 @@ public class Window {
                 assert false : "Unknown scene '" + newScene + "'";
                 break;
         }
+//        currentScene.load();
         currentScene.init();
         currentScene.start();
     }
@@ -80,12 +96,18 @@ public class Window {
         return currentScene;
     }
 
+    /**
+     * run() - run the game and free the resources after
+     */
     public void run(){
-        System.out.println("hello lwjgl" + Version.getVersion() + "!");
+//        System.out.println("hello lwjgl" + Version.getVersion() + "!");
 
         init();
         loop();
+        dispose();
+    }
 
+    private void dispose() {
         imGuiLayer.dispose();
 
         //free allocated memory
@@ -102,6 +124,9 @@ public class Window {
         }
     }
 
+    /**
+     * init() - initialize window, GLFW, imGui, and set to the first scene
+     */
     public void init() {
         //setup lwjgl error callback
         GLFWErrorCallback.createPrint(System.err).set();
@@ -161,6 +186,9 @@ public class Window {
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
+        this.framebuffer  = new Framebuffer(getWidth(), getHeight());
+        glViewport(0, 0, getWidth(), getHeight());
+
         changeScene(0);
     }
 
@@ -179,23 +207,34 @@ public class Window {
         }
     }
 
+    /**
+     * loop() - game loop - calc dt, and update all objects each frame
+     */
     public void loop() {
         beginTime = (float) glfwGetTime() ;
         endTime = (float) glfwGetTime();
         dt = -1.0f;
 
         while(!glfwWindowShouldClose(glfwWindow)) {
+//            this.framebuffer.bind();    //render scene to framebuffer
             startFrame();
+            DebugDrawBatch.beginFrame();
 
             if ( dt >= 0.0f) {
+                DebugDrawBatch.draw();
                 currentScene.update(dt);
-                imGuiLayer.update(dt);
             }
+
+            this.framebuffer.unbind();  //end render to framebuffer
+            imGuiLayer.update(dt, currentScene);
+
+//            DebugDrawBatch.draw(); // for testing viewport dimensions
 
             endFrame();
 
-
         }
+
+        currentScene.save();
     }
 
     protected void startFrame(){
@@ -225,4 +264,6 @@ public class Window {
     public static int getHeight() {
         return get().config.getHeight();
     }
+
+    public static float getAspectRatio() { return (float) getWidth() / (float) getHeight(); }
 }

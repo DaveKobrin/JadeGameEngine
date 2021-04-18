@@ -2,6 +2,9 @@ package Jade;
 
 import org.joml.Vector2f;
 
+/**
+ * Transform - contains the position and scale information for GameObjects
+ */
 public class Transform {
     private Vector2f position;
     private Vector2f scale;
@@ -18,12 +21,11 @@ public class Transform {
         init(position, scale);
     }
 
-    public Transform(Transform transform) {
-        init(transform.getPosition(), transform.getScale());
-    }
+    public Transform(Transform transform) { init(transform.getPosition(), transform.getScale()); }
+
     private void init(Vector2f position, Vector2f scale) {
-        this.position = new Vector2f(position);
-        this.scale = new Vector2f(scale);
+        this.position = position;
+        this.scale = scale;
     }
     public Vector2f getPosition() {
         return position;
@@ -39,6 +41,18 @@ public class Transform {
 
     public void setScale(Vector2f scale) {
         this.scale = scale;
+    }
+
+    public Transform copy(Transform t) {
+        Transform result = new Transform();
+        result.setPosition(t.getPosition());
+        result.setScale(t.getScale());
+        return result;
+    }
+
+    public static void copyValues(Transform src, Transform dest) {
+        dest.setPosition(src.getPosition());
+        dest.setScale(src.getScale());
     }
 
     @Override

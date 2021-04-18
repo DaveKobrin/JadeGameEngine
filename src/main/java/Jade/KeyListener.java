@@ -3,6 +3,9 @@ package Jade;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
+/**
+ * KeyListener - handles keyboard events
+ */
 public class KeyListener {
     private static KeyListener instance;
     private boolean keyPressed[] = new boolean[350];

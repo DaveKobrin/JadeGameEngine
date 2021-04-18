@@ -10,7 +10,41 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Color implements Cloneable {
+    public enum COLORS {
+        RED(1.0f, 0.0f, 0.0f, 1.0f),
+        GREEN(0.0f, 1.0f, 0.0f, 1.0f),
+        CYAN(0.0f,1.0f,1.0f,1.0f),
+        BLUE(0.0f, 0.0f, 1.0f, 1.0f),
+        PURPLE(0.5f,0.0f,1.0f,1.0f),
+        MAGENTA(1.0f, 0.0f,1.0f,1.0f),
+        YELLOW(1.0f,1.0f,0.0f,1.0f),
+        ORANGE(1.0f,0.5f,0.0f,1.0f),
+        DARK_GRAY(0.2f,0.2f,0.2f,1.0f),
+        MID_GRAY(0.4f, 0.4f,0.4f,1.0f),
+        LIGHT_GRAY(0.7f, 0.7f,0.7f,1.0f),
+        WHITE(1.0f,1.0f,1.0f,1.0f);
+
+
+        float r, g, b, a;
+
+        COLORS(float r, float g, float b, float a) {
+            this.r = r;
+            this.g = g;
+            this.b = b;
+            this.a = a;
+        }
+
+        public float[] getColors() {
+            return new float[]{this.r, this.g, this.b, this.a};
+        }
+
+        public Color getAsColor() { return new Color(getColors()); }
+    }
+
+
     private final float[] data = new float[4];
+
+    public Color(COLORS color) { set(color.getColors()); }
 
     public Color(final float[] color) {
         set(color);

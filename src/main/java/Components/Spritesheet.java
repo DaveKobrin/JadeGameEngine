@@ -6,6 +6,10 @@ import org.joml.Vector2f;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Spritesheet - allows for multiple sprites to be contained in a single Texture
+ *               manages the array of sprites by UV coordinates within that Texture
+ */
 public class Spritesheet {
     private Texture texture;
     private List<Sprite> sprites;
@@ -29,7 +33,11 @@ public class Spritesheet {
                     new Vector2f(left, top)
             };
 
-            Sprite sprite = new Sprite(this.texture, texCoords);
+            Sprite sprite = new Sprite();
+            sprite.setTexture(this.texture);
+            sprite.setTexCoords(texCoords);
+            sprite.setWidth(spriteWidth);
+            sprite.setHeight(spriteHeight);
             this.sprites.add(sprite);
 
             currentX += spriteWidth + spacing;
@@ -42,5 +50,9 @@ public class Spritesheet {
 
     public Sprite getSprite(int index) {
         return this.sprites.get(index);
+    }
+
+    public int getSize() {
+        return sprites.size();
     }
 }

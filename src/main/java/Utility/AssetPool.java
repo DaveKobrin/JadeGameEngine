@@ -8,6 +8,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * AssetPool - maintain references to resources
+ */
 public class AssetPool {
     private static Map<String, Shader> shaders = new HashMap<>();
     private static Map<String, Texture> textures = new HashMap<>();
@@ -25,7 +28,8 @@ public class AssetPool {
     public static void addTextureResource(String resourceName) {
         File file = new File(resourceName);
         if (!AssetPool.textures.containsKey(file.getAbsolutePath())) {
-            Texture texture = new Texture(resourceName);
+            Texture texture = new Texture();
+            texture.init(resourceName);
             AssetPool.textures.put(file.getAbsolutePath(), texture);
         }
     }
