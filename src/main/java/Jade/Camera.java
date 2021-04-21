@@ -61,4 +61,19 @@ public class Camera {
         return this.projectionMatrix;
     }
 
+    public Matrix4f getWorld2NormalizedScreenMat() {
+        Matrix4f result = new Matrix4f();
+        projectionMatrix.mul(viewMatrix, result);
+        return result;
+    }
+
+    public Matrix4f getNormalizedScreen2WorldMat() {
+        Matrix4f result = new Matrix4f();
+        invViewMatrix.mul(invProjMatrix, result);
+        return result;
+    }
+
+    public float getWorldSizeX() { return WORLD_POS_RIGHT - WORLD_POS_LEFT; }
+    public float getWorldSizeY() { return WORLD_POS_TOP - WORLD_POS_BOTTOM; }
+
 }

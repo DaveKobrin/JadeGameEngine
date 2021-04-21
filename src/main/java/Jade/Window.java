@@ -35,8 +35,8 @@ public class Window {
         /**
          *  Window Width and Height
          */
-        private int width = 1920;
-        private int height = 1080;
+        private int width = 1600;
+        private int height = 900;
 
         /**
          *  Window state flags

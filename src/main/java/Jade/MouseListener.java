@@ -11,71 +11,61 @@ import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
  * MouseListener - handle mouse events
  */
 public class MouseListener {
-    private static MouseListener instance;
-    private double scrollX, scrollY;
-    private double xPos, yPos, lastX, lastY;
-    private double dragStartX, dragStartY;
-    private double dragStopX, dragStopY;
-    private boolean mouseButtonPressed[] = new boolean[3];
-    private boolean isDragging;
+    private static double scrollX = 0.0;
+    private static double scrollY = 0.0;
+    private static double xPos = 0.0;
+    private static double yPos = 0.0;
+    private static double lastX = 0.0;
+    private static double lastY = 0.0;
+    private static double dragStartX = 0.0;
+    private static double dragStartY = 0.0;
+    private static double dragStopX = 0.0;
+    private static double dragStopY = 0.0;
+    private static boolean mouseButtonPressed[] = new boolean[3];
+    private static boolean isDragging = false;
 
-    private MouseListener() {
-        this.scrollX = 0.0;
-        this.scrollY = 0.0;
-        this.xPos = 0.0;
-        this.yPos = 0.0;
-        this.lastX = 0.0;
-        this.lastY = 0.0;
-    }
-
-    public static MouseListener get() {
-        if (MouseListener.instance == null) {
-            MouseListener.instance = new MouseListener();
-        }
-        return MouseListener.instance;
-    }
 
     public static void mousePosCallback(long window, double xpos, double ypos) {
-        get().lastX = get().xPos;
-        get().lastY = get().yPos;
-        get().xPos = xpos;
-        get().yPos = ypos;
+        lastX = xPos;
+        lastY = yPos;
+        xPos = xpos;
+        yPos = ypos;
 
         //if mouse button is pressed during a position change then dragging is true
-        if (!get().isDragging && (get().mouseButtonPressed[0] || get().mouseButtonPressed[1] || get().mouseButtonPressed[2])) {
-            get().isDragging = true;
-            get().dragStartX = xpos;
-            get().dragStartY = ypos;
+        if (!isDragging && (mouseButtonPressed[0] || mouseButtonPressed[1] || mouseButtonPressed[2])) {
+           isDragging = true;
+           dragStartX = xpos;
+           dragStartY = ypos;
         }
     }
 
     public static void mouseButtonCallback(long window, int button, int action, int mods) {
         if (action == GLFW_PRESS) {
-            if (button < get().mouseButtonPressed.length) {
-                get().mouseButtonPressed[button] = true;
+            if (button < mouseButtonPressed.length) {
+                mouseButtonPressed[button] = true;
             }
         } else if (action == GLFW_RELEASE) {
-            if (button < get().mouseButtonPressed.length) {
-                get().mouseButtonPressed[button] = false;
-                if (get().isDragging && !(get().mouseButtonPressed[0] || get().mouseButtonPressed[1] || get().mouseButtonPressed[2])) {
-                    get().isDragging = false;
-                    get().dragStopX = get().xPos;
-                    get().dragStopY = get().yPos;
+            if (button < mouseButtonPressed.length) {
+                mouseButtonPressed[button] = false;
+                if (isDragging && !(mouseButtonPressed[0] || mouseButtonPressed[1] || mouseButtonPressed[2])) {
+                    isDragging = false;
+                    dragStopX = xPos;
+                    dragStopY = yPos;
                 }
             }
         }
     }
 
     public static void mouseScrollCallback(long window, double xOffset, double yOffset) {
-        get().scrollX = xOffset;
-        get().scrollY = yOffset;
+        scrollX = xOffset;
+        scrollY = yOffset;
     }
 
     public static void endFrame() {
-        get().scrollX = 0;
-        get().scrollY = 0;
-        get().lastX = get().xPos;
-        get().lastY = get().yPos;
+        scrollX = 0;
+        scrollY = 0;
+        lastX = xPos;
+        lastY = yPos;
     }
 
     /**
@@ -84,13 +74,8 @@ public class MouseListener {
      */
     public static float getOrthoX() {
         float currX = getX();
-        float currXNormalized = (currX/(float) Window.getWidth()) * 2.0f -1.0f;
-
-        Vector4f currXVec4 = new Vector4f( currXNormalized, 0, 0, 1);
-        Matrix4f invProjMat = new Matrix4f(Window.getScene().getCamera().getInvProjMatrix());
-        Matrix4f invViewMat = new Matrix4f(Window.getScene().getCamera().getInvViewMatrix());
-        currXVec4.mul(invProjMat).mul(invViewMat);
-        return currXVec4.x;
+        float currXNormalized = (currX/(float) Window.getWidth()) * 2.0f -1.0f; //GL Normalized Device Coordinate range (-1, 1)
+        return getXinWorldCoords(currXNormalized);
     }
 
     /**
@@ -99,13 +84,8 @@ public class MouseListener {
      */
     public static float getOrthoY() {
         float currY = Window.getHeight() - getY();
-        float currYNormalized = ((currY/(float) Window.getHeight()) * 2.0f -1.0f);
-        Vector4f currYVec4 = new Vector4f( 0, currYNormalized, 0, 1);
-        Matrix4f invProjMat = new Matrix4f(Window.getScene().getCamera().getInvProjMatrix());
-        Matrix4f invViewMat = new Matrix4f(Window.getScene().getCamera().getInvViewMatrix());
-        currYVec4.mul(invProjMat).mul(invViewMat);
-//        currYVec4.mul(Window.getScene().getCamera().getInvProjMatrix()).mul(Window.getScene().getCamera().getInvViewMatrix());
-        return currYVec4.y;
+        float currYNormalized = ((currY/(float) Window.getHeight()) * 2.0f -1.0f); //GL Normalized Device Coordinate range (-1, 1)
+        return getYinWorldCoords(currYNormalized);
     }
 
     /**
@@ -114,13 +94,8 @@ public class MouseListener {
      */
     public static float getViewportOrthoX() {
         float currX = getX() - GameViewWindow.getViewportPosX();
-        float currXNormalized = (currX/GameViewWindow.getViewportSizeX()) * 2.0f -1.0f;
-
-        Vector4f currXVec4 = new Vector4f( currXNormalized, 0, 0, 1);
-        Matrix4f invProjMat = new Matrix4f(Window.getScene().getCamera().getInvProjMatrix());
-        Matrix4f invViewMat = new Matrix4f(Window.getScene().getCamera().getInvViewMatrix());
-        currXVec4.mul(invProjMat).mul(invViewMat);
-        return currXVec4.x;
+        float currXNormalized = (currX/GameViewWindow.getViewportSizeX()) * 2.0f -1.0f; //GL Normalized Device Coordinate range (-1, 1)
+        return getXinWorldCoords(currXNormalized);
     }
 
     /**
@@ -129,71 +104,71 @@ public class MouseListener {
      */
     public static float getViewportOrthoY() {
         float currY = getY() - GameViewWindow.getViewportPosY();
-        float currYNormalized = -((currY/GameViewWindow.getViewportSizeY()) * 2.0f -1.0f);
-        Vector4f currYVec4 = new Vector4f( 0, currYNormalized, 0, 1);
+        float currYNormalized = -((currY/GameViewWindow.getViewportSizeY()) * 2.0f -1.0f); //GL Normalized Device Coordinate range (-1, 1)
+        return getYinWorldCoords(currYNormalized);
+    }
 
-        Matrix4f invProjMat = new Matrix4f(Window.getScene().getCamera().getInvProjMatrix());
-        Matrix4f invViewMat = new Matrix4f(Window.getScene().getCamera().getInvViewMatrix());
-        currYVec4.mul(invProjMat).mul(invViewMat);
-//      currYVec4.mul(Window.getScene().getCamera().getInvProjMatrix()).mul(Window.getScene().getCamera().getInvViewMatrix());
+    private static float getXinWorldCoords(float inX) {
+        Vector4f currXVec4 = new Vector4f( inX, 0, 0, 1);
+        currXVec4.mul(Window.getScene().getCamera().getNormalizedScreen2WorldMat());
+        return currXVec4.x;
+    }
+
+    private static float getYinWorldCoords(float inY) {
+        Vector4f currYVec4 = new Vector4f( 0, inY, 0, 1);
+        currYVec4.mul(Window.getScene().getCamera().getNormalizedScreen2WorldMat());
         return currYVec4.y;
     }
 
-    public static float getX() {
-        return (float)(get().xPos);
-    }
+    public static float getX() { return (float)xPos; }
 
-    public static float getY() {
-        return (float)(get().yPos);
-    }
+    public static float getY() { return (float)yPos; }
 
     public static float getDx() {
-        return (float)(get().lastX - get().xPos);
+        return (float)(lastX - xPos);
     }
 
     public static float getDy() {
-        return (float)(get().lastY - get().yPos);
+        return (float)(lastY - yPos);
     }
 
-    public static float getDragStartX() {
-        return (float)(get().dragStartX);
-    }
+    public static float getDragStartX() { return (float)dragStartX; }
 
     public static float getDragStartY() {
-        return (float)(get().dragStartY);
+        return (float)dragStartY;
     }
 
     public static float getDragStopX() {
-        return (float)(get().dragStopX);
+        return (float)dragStopX;
     }
 
     public static float getDragStopY() {
-        return (float)(get().dragStopY);
+        return (float)dragStopY;
     }
 
     public static float getDeltaDragX() {
-        return (float)(get().dragStartX - get().dragStopX);
+        return (float)(dragStartX - dragStopX);
     }
 
     public static float getDeltaDragY() {
-        return (float)(get().dragStartY - get().dragStopY);
+        return (float)(dragStartY - dragStopY);
     }
 
     public static float getScrollX() {
-        return (float)get().scrollX;
+        return (float)scrollX;
     }
 
     public static float getScrollY() {
-        return (float)get().scrollY;
+        return (float)scrollY;
     }
 
     public static boolean isDragging() {
-        return get().isDragging;
+        return isDragging;
     }
 
     public static boolean mouseButtonDown(int button) {
-        if (button < get().mouseButtonPressed.length) {
-            return get().mouseButtonPressed[button];
+        if (button < mouseButtonPressed.length) {
+            return mouseButtonPressed[button];
         } else {
             return false;
         }

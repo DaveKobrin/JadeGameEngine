@@ -11,6 +11,9 @@ import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
 public class MouseControl extends Component {
 
+    private final int debugDelayMax = 300;
+    private int debugDelayCount = 0;
+
     GameObject objectHeld = null;
 
     public void attach(GameObject obj) {
@@ -27,26 +30,21 @@ public class MouseControl extends Component {
 
     @Override
     public void update(float dt) {
-        if (KeyListener.isKeyPressed(GLFW_KEY_SPACE)){
-            System.out.println("space bar pressed");
-            GameObject go = new GameObject("test", new Transform(new Vector2f(100,100), new Vector2f(200,200)), 0);
-            Sprite spr = new Sprite();
-            spr.setTexture(AssetPool.getTexture("assets/textures/decorationsAndBlocks.png"));
-            SpriteRenderer goSprRend = new SpriteRenderer();
-            goSprRend.setSprite(spr);
-            go.addComponent(goSprRend);
-            Window.getScene().addGameObject2Scene(go);
-        }
         if (objectHeld != null) {
 //            Vector2f newPos = new Vector2f(MouseListener.getOrthoX(), MouseListener.getOrthoY());
-            Vector2f newPos = new Vector2f(MouseListener.getViewportOrthoX(), MouseListener.getViewportOrthoY());
+            if (++debugDelayCount >= debugDelayMax) {       //allow for breakpoint debugDelayMax frames after picked block
+                debugDelayCount = 0;
+            }
+            float x = MouseListener.getViewportOrthoX();
+            float y = MouseListener.getViewportOrthoY();
+            Vector2f newPos = new Vector2f(x, y);
             newPos.x = ((int)newPos.x / Settings.TILE_WIDTH) * Settings.TILE_WIDTH;
             newPos.y = ((int)newPos.y / Settings.TILE_HEIGHT) * Settings.TILE_HEIGHT;
-//            System.out.println(newPos);
+            System.out.println(newPos);
             objectHeld.getTransform().setPosition(newPos);
 
             if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)
-//                           &&  GameViewWindow.isInViewport(newPos.x, newPos.y)
+                           &&  GameViewWindow.isInViewport(newPos.x, newPos.y)
             ) {
                 detach();
             }
