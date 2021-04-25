@@ -31,7 +31,6 @@ public class MouseControl extends Component {
     @Override
     public void update(float dt) {
         if (objectHeld != null) {
-//            Vector2f newPos = new Vector2f(MouseListener.getOrthoX(), MouseListener.getOrthoY());
             if (++debugDelayCount >= debugDelayMax) {       //allow for breakpoint debugDelayMax frames after picked block
                 debugDelayCount = 0;
             }
@@ -43,11 +42,17 @@ public class MouseControl extends Component {
             System.out.println(newPos);
             objectHeld.getTransform().setPosition(newPos);
 
-            if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)
-                           &&  GameViewWindow.isInViewport(newPos.x, newPos.y)
-            ) {
+            if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) &&  GameViewWindow.isInViewport(newPos.x, newPos.y)) {
                 detach();
             }
+        } else if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)){
+            int x = (int) MouseListener.getViewportXPos();
+            int y = (int) MouseListener.getViewportYPos();
+            int entID = Window.get().getPickingTexture().readPixel(x,y);
+            System.out.println("x,y : " + x + "," + y + "entityID : " + entID);
+            GameObject go = Window.getScene().getGoByUID(entID);
+            if (go != null)
+                Window.getScene().setActiveGameObject(go);
         }
     }
 }

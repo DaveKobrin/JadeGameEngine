@@ -31,6 +31,7 @@ public abstract class Scene {
     protected Renderer renderer;
     protected Camera camera;
     private boolean isRunning = false;
+    @Getter     @Setter
     protected GameObject activeGameObject = null;
     protected boolean levelLoaded = false;
     @Getter     @Setter
@@ -47,9 +48,11 @@ public abstract class Scene {
         for (GameObject go : this.gameObjects) {
             go.update(dt);
         }
-        this.renderer.render();
     }
 
+    public void render() {
+        this.renderer.render();
+    }
     /**
      * init() - initialize variables - children may override fore specific needs, but must
      *          create these instances or call back to this method
@@ -168,6 +171,15 @@ public abstract class Scene {
        } catch (IOException e) {
            e.printStackTrace();
        }
+    }
+
+    public GameObject getGoByUID(int uid) {
+        //returns the gameObject with the uid or null if not found
+        for (GameObject go : gameObjects) {
+            if (go.getUid() == uid)
+                return go;
+        }
+        return null;
     }
 
 }

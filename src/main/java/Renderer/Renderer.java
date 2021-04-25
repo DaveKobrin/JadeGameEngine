@@ -2,6 +2,7 @@ package Renderer;
 
 import Components.SpriteRenderer;
 import Jade.GameObject;
+import Utility.AssetPool;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,12 +12,14 @@ import java.util.List;
  * Renderer - contains and manages all the RenderBatches
  */
 public class Renderer {
+    private static Shader currShader = AssetPool.getShader("assets/shaders/default.glsl");
     private final int MAX_BATCH_SIZE = 1000;
     private List<RenderBatch> batches;
 
-    public Renderer () {
-        this.batches = new ArrayList<>();
-    }
+    public static void bindShader(Shader shader) { currShader = shader; }
+    public static Shader getCurrShader() { return currShader; }
+
+    public Renderer () { this.batches = new ArrayList<>(); }
 
     public void add(GameObject go) {
         SpriteRenderer sprite = go.getComponent(SpriteRenderer.class);

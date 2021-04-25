@@ -31,13 +31,15 @@ public class RenderBatch implements Comparable<RenderBatch> {
     private final int COLOR_SIZE = 4;
     private final int TEX_COORDS_SIZE = 2;
     private final int TEX_ID_SIZE = 1;
+    private final int ENTITY_ID_SIZE = 1;
 
     private final int POS_OFFSET = 0;
     private final int COLOR_OFFSET = POS_OFFSET + POS_SIZE * Float.BYTES;
     private final int TEX_COORDS_OFFSET = COLOR_OFFSET + COLOR_SIZE * Float.BYTES;
     private final int TEX_ID_OFFSET = TEX_COORDS_OFFSET + TEX_COORDS_SIZE * Float.BYTES;
+    private final int ENTITY_ID_OFFSET = TEX_ID_OFFSET + TEX_ID_SIZE * Float.BYTES;
 
-    private final int VERTEX_SIZE = POS_SIZE  + COLOR_SIZE + TEX_COORDS_SIZE + TEX_ID_SIZE;
+    private final int VERTEX_SIZE = POS_SIZE  + COLOR_SIZE + TEX_COORDS_SIZE + TEX_ID_SIZE + ENTITY_ID_SIZE;
     private final int VERTEX_SIZE_BYTES = VERTEX_SIZE * Float.BYTES;
 
     private final int MAX_TEXTURES = 16; // reserve texture slot 0 for null texture
@@ -54,11 +56,9 @@ public class RenderBatch implements Comparable<RenderBatch> {
     private int vaoID;
     private int vboID;
 
-    private Shader shader;
     private int zIndex;
 
     public RenderBatch(int maxBatchSize, int zIndex) {
-        shader = AssetPool.getShader("assets/shaders/default.glsl");
 
         this.zIndex = zIndex;
         this.maxBatchSize = maxBatchSize;
@@ -102,6 +102,9 @@ public class RenderBatch implements Comparable<RenderBatch> {
         glVertexAttribPointer(3, TEX_ID_SIZE, GL_FLOAT,false, VERTEX_SIZE_BYTES, TEX_ID_OFFSET);
         glEnableVertexAttribArray(3);
 
+        glVertexAttribPointer(4, ENTITY_ID_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, ENTITY_ID_OFFSET);
+        glEnableVertexAttribArray(4);
+
     }
 
     public void render() {
@@ -122,6 +125,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
         }
 
         //use shader
+        Shader shader = Renderer.getCurrShader();
         shader.use();
         shader.uploadMat4f("uProjection", Window.getScene().getCamera().getProjectionMatrix());
         shader.uploadMat4f("uView", Window.getScene().getCamera().getViewMatrix());
@@ -131,7 +135,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
             glActiveTexture(GL_TEXTURE0 + i);
             this.textures.get(i).bind(); //
         }
-        this.shader.uploadIntArray("uTextures", TEXTURE_SLOTS);
+        shader.uploadIntArray("uTextures", TEXTURE_SLOTS);
 
         glBindVertexArray(vaoID);
         glEnableVertexAttribArray(0);
@@ -244,6 +248,9 @@ public class RenderBatch implements Comparable<RenderBatch> {
 
             // texID
             vertices[8 + offset] = (float) texID;
+
+            // entityID
+            vertices[9 + offset] = sprite.gameObject.getUid();
 
             offset += VERTEX_SIZE;
         }

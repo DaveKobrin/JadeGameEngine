@@ -70,6 +70,7 @@ public class LevelEditorScene extends Scene {
 //
 //        DebugDrawBatch.addBox2D(viewportCenter, vpSize, Color.COLORS.YELLOW.getAsColor());
         physicsSystem2D.update(dt);
+
 //------------------------------------
     }
 
@@ -162,6 +163,7 @@ public class LevelEditorScene extends Scene {
     protected void loadResources() {
         AssetPool.addShaderResource("assets/shaders/default.glsl");
         AssetPool.addShaderResource("assets/shaders/debug_line2d.glsl");
+        AssetPool.addShaderResource("assets/shaders/picking_shader.glsl");
         AssetPool.addTextureResource("assets/textures/decorationsAndBlocks.png");
         AssetPool.addSpritesheetResource("assets/textures/decorationsAndBlocks.png",
                 new Spritesheet(AssetPool.getTexture("assets/textures/decorationsAndBlocks.png"),

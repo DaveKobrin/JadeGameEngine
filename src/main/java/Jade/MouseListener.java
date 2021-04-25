@@ -68,6 +68,17 @@ public class MouseListener {
         lastY = yPos;
     }
 
+    public static float getViewportXPos() {
+        float currX = getX() - GameViewWindow.getViewportPosX();
+        float viewportXPos = (currX/GameViewWindow.getViewportSizeX()) * Window.getWidth(); //mouse xpos in viewport converted to full framebuffer size
+        return viewportXPos;
+    }
+
+    public static float getViewportYPos() {
+        float currY = getY() - GameViewWindow.getViewportPosY();
+        float viewportYPos = Window.getHeight() - ((currY/GameViewWindow.getViewportSizeY()) * Window.getHeight()); //mouse ypos in viewport converted to full framebuffer size
+        return viewportYPos;
+    }
     /**
      * getOrthoX() - get current mouse X pos in world coordinates
      * @return mouse X pos converted from screen coordinates to world coordinates

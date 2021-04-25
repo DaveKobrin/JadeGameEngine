@@ -2,6 +2,9 @@ package Jade;
 
 import Renderer.DebugDrawBatch;
 import Renderer.Framebuffer;
+import Renderer.PickingTexture;
+import Renderer.Renderer;
+import Utility.AssetPool;
 import Utility.Color;
 import lombok.Data;
 import lombok.Getter;
@@ -64,6 +67,9 @@ public class Window {
     private static Scene currentScene = null;
     @Getter
     private Framebuffer framebuffer;
+
+    @Getter
+    private PickingTexture pickingTexture;
 
     private Window() {
         config = new Configuration();
@@ -187,6 +193,7 @@ public class Window {
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
         this.framebuffer  = new Framebuffer(getWidth(), getHeight());
+        this.pickingTexture = new PickingTexture(getWidth(), getHeight());
         glViewport(0, 0, getWidth(), getHeight());
 
         changeScene(0);
@@ -216,13 +223,36 @@ public class Window {
         dt = -1.0f;
 
         while(!glfwWindowShouldClose(glfwWindow)) {
+            //poll events
+            glfwPollEvents();
+            //render pass 1 render to pickingTexture
+            glDisable(GL_BLEND);
+            pickingTexture.enableWrite();
+            glViewport(0,0, getWidth(), getHeight());
+            glClearColor(0,0,0,0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            Renderer.bindShader(AssetPool.getShader("assets/shaders/picking_shader.glsl"));
+            currentScene.render();
+
+            pickingTexture.disableWrite();
+            glEnable(GL_BLEND);
+
+
+            //render pass 2
             this.framebuffer.bind();    //render scene to framebuffer
-            startFrame();
+
+            glClearColor(colorBg.getRed(),colorBg.getGreen(),colorBg.getBlue(),colorBg.getAlpha());
+            glClear(GL_COLOR_BUFFER_BIT);
+
             DebugDrawBatch.beginFrame();
+
 
             if ( dt >= 0.0f) {
                 DebugDrawBatch.draw();
                 currentScene.update(dt);
+                Renderer.bindShader(AssetPool.getShader("assets/shaders/default.glsl"));
+                currentScene.render();      //be sure to bind a shader before this call
             }
 
             this.framebuffer.unbind();  //end render to framebuffer
@@ -238,11 +268,9 @@ public class Window {
     }
 
     protected void startFrame(){
-        //poll events
-        glfwPollEvents();
 
-        glClearColor(colorBg.getRed(),colorBg.getGreen(),colorBg.getBlue(),colorBg.getAlpha());
-        glClear(GL_COLOR_BUFFER_BIT);
+
+
     }
 
     protected void endFrame(){
