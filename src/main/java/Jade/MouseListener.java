@@ -1,7 +1,6 @@
 package Jade;
 
-import Editor.GameViewWindow;
-import org.joml.Matrix4f;
+
 import org.joml.Vector4f;
 
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
@@ -69,14 +68,14 @@ public class MouseListener {
     }
 
     public static float getViewportXPos() {
-        float currX = getX() - GameViewWindow.getViewportPosX();
-        float viewportXPos = (currX/GameViewWindow.getViewportSizeX()) * Window.getWidth(); //mouse xpos in viewport converted to full framebuffer size
+        float currX = getX() - Window.getScene().getGameViewWindow().getViewportPosX();
+        float viewportXPos = (currX/Window.getScene().getGameViewWindow().getViewportSizeX()) * Window.getWidth(); //mouse xpos in viewport converted to full framebuffer size
         return viewportXPos;
     }
 
     public static float getViewportYPos() {
-        float currY = getY() - GameViewWindow.getViewportPosY();
-        float viewportYPos = Window.getHeight() - ((currY/GameViewWindow.getViewportSizeY()) * Window.getHeight()); //mouse ypos in viewport converted to full framebuffer size
+        float currY = getY() - Window.getScene().getGameViewWindow().getViewportPosY();
+        float viewportYPos = Window.getHeight() - ((currY/Window.getScene().getGameViewWindow().getViewportSizeY()) * Window.getHeight()); //mouse ypos in viewport converted to full framebuffer size
         return viewportYPos;
     }
     /**
@@ -104,8 +103,8 @@ public class MouseListener {
      * @return mouse X pos converted from screen coordinates to world coordinates
      */
     public static float getViewportOrthoX() {
-        float currX = getX() - GameViewWindow.getViewportPosX();
-        float currXNormalized = (currX/GameViewWindow.getViewportSizeX()) * 2.0f -1.0f; //GL Normalized Device Coordinate range (-1, 1)
+        float currX = getX() - Window.getScene().getGameViewWindow().getViewportPosX();
+        float currXNormalized = (currX/Window.getScene().getGameViewWindow().getViewportSizeX()) * 2.0f -1.0f; //GL Normalized Device Coordinate range (-1, 1)
         return getXinWorldCoords(currXNormalized);
     }
 
@@ -114,8 +113,8 @@ public class MouseListener {
      * @return mouse X pos converted from screen coordinates to world coordinates
      */
     public static float getViewportOrthoY() {
-        float currY = getY() - GameViewWindow.getViewportPosY();
-        float currYNormalized = -((currY/GameViewWindow.getViewportSizeY()) * 2.0f -1.0f); //GL Normalized Device Coordinate range (-1, 1)
+        float currY = getY() - Window.getScene().getGameViewWindow().getViewportPosY();
+        float currYNormalized = -((currY/Window.getScene().getGameViewWindow().getViewportSizeY()) * 2.0f -1.0f); //GL Normalized Device Coordinate range (-1, 1)
         return getYinWorldCoords(currYNormalized);
     }
 

@@ -1,7 +1,11 @@
-package Jade;
+package scenes;
 
 import Components.MouseControl;
 import Components.SpriteRenderer;
+import Editor.GameViewWindow;
+import Jade.Camera;
+import Jade.Component;
+import Jade.GameObject;
 import Renderer.Renderer;
 import Utility.AssetPool;
 import com.google.gson.Gson;
@@ -31,12 +35,13 @@ public abstract class Scene {
     protected Renderer renderer;
     protected Camera camera;
     private boolean isRunning = false;
-    @Getter     @Setter
-    protected GameObject activeGameObject = null;
+
     protected boolean levelLoaded = false;
     @Getter     @Setter
     protected String levelFileName = "";
     protected List<GameObject> gameObjects = new ArrayList<>();
+    @Getter
+    protected GameViewWindow gameViewWindow = new GameViewWindow();
 
     /**
      * update(dt) - called every frame and in turn calls update(dt) on all
@@ -100,17 +105,7 @@ public abstract class Scene {
         return this.camera;
     }
 
-    /**
-     * sceneImGui() - process UI items specific to the active GameObject
-     */
-    public void objectImGui() {
-        //process GameObject specific GUI items
-        if (activeGameObject != null) {
-            ImGui.begin("Insepector");
-            activeGameObject.imGui();
-            ImGui.end();
-        }
-    }
+
 
     /**
      * imGui() - process UI items specific to the scene

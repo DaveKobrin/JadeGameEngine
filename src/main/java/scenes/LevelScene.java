@@ -1,7 +1,5 @@
 package scenes;
 
-import Jade.Scene;
-
 /**
  * LevelScene - a game level
  */

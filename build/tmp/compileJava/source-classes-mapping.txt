@@ -7,8 +7,8 @@ Physics2D/Forces/ForceRegistry.java
  Physics2D.Forces.ForceRegistry
 Physics2D/Primitives/Ray2D.java
  Physics2D.Primitives.Ray2D
-Renderer/Shader.java
- Renderer.Shader
+Renderer/Renderer.java
+ Renderer.Renderer
 Physics2D/Primitives/Collider2D.java
  Physics2D.Primitives.Collider2D
 Physics2D/Primitives/Box2D.java
@@ -17,19 +17,25 @@ Components/Spritesheet.java
  Components.Spritesheet
 Utility/GsonComponentTypeAdapter.java
  Utility.GsonComponentTypeAdapter
+Physics2D/Primitives/Circle.java
+ Physics2D.Primitives.Circle
 Physics2D/Primitives/RaycastResult.java
  Physics2D.Primitives.RaycastResult
 Jade/Component.java
  Jade.Component
  Jade.Component$1
-Jade/Camera.java
- Jade.Camera
+Components/MouseControl.java
+ Components.MouseControl
 Physics2D/Forces/ForceGenerator.java
  Physics2D.Forces.ForceGenerator
 Jade/KeyListener.java
  Jade.KeyListener
-Physics2D/RigidBody/Collisions2D.java
- Physics2D.RigidBody.Collisions2D
+Physics2D/Primitives/AABB.java
+ Physics2D.Primitives.AABB
+Physics2D/RigidBody/IntersectDetector2D.java
+ Physics2D.RigidBody.IntersectDetector2D
+Physics2D/Forces/Gravity2D.java
+ Physics2D.Forces.Gravity2D
 Renderer/Line2D.java
  Renderer.Line2D
 Renderer/PickingTexture.java
@@ -46,8 +52,8 @@ Physics2D/RigidBody/CollisionManifold.java
  Physics2D.RigidBody.CollisionManifold
 Jade/PreFabs.java
  Jade.PreFabs
-Physics2D/RigidBody/IntersectDetector2D.java
- Physics2D.RigidBody.IntersectDetector2D
+Physics2D/RigidBody/Collisions2D.java
+ Physics2D.RigidBody.Collisions2D
 Utility/Settings.java
  Utility.Settings
 Utility/TypeClassMap.java
@@ -71,18 +77,15 @@ Utility/JMath.java
  Utility.JMath
 Components/Sprite.java
  Components.Sprite
-Physics2D/Primitives/AABB.java
- Physics2D.Primitives.AABB
-Renderer/Renderer.java
- Renderer.Renderer
-Physics2D/Forces/Gravity2D.java
- Physics2D.Forces.Gravity2D
-Physics2D/Primitives/Circle.java
- Physics2D.Primitives.Circle
-Components/MouseControl.java
- Components.MouseControl
-scenes/LevelEditorScene.java
- scenes.LevelEditorScene
+Renderer/Shader.java
+ Renderer.Shader
+Jade/Window.java
+ Jade.Window
+ Jade.Window$Configuration
+scenes/Scene.java
+ scenes.Scene
+Jade/Camera.java
+ Jade.Camera
 Renderer/DebugDrawBatch.java
  Renderer.DebugDrawBatch
 scenes/LevelScene.java
@@ -97,8 +100,9 @@ Jade/ImGuiLayer.java
  Jade.ImGuiLayer
 Editor/GameViewWindow.java
  Editor.GameViewWindow
-Jade/Window.java
- Jade.Window
- Jade.Window$Configuration
-Jade/Scene.java
- Jade.Scene
+Editor/PropertiesWindow.java
+ Editor.PropertiesWindow
+scenes/LevelEditorScene.java
+ scenes.LevelEditorScene
+Components/EditorCamera.java
+ Components.EditorCamera

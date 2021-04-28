@@ -11,19 +11,19 @@ import org.joml.Vector4f;
 public class GameViewWindow {
 
     @Getter
-    private static ImVec2 viewportSize = new ImVec2();
-    private static ImVec2 viewportLocalPos = new ImVec2();
+    private  ImVec2 viewportSize = new ImVec2();
+    private  ImVec2 viewportLocalPos = new ImVec2();
     @Getter
-    private static ImVec2 viewportScreenPos = new ImVec2();
+    private  ImVec2 viewportScreenPos = new ImVec2();
 //    @Getter
 //    private static float viewportScaleX = 0f;
 //    @Getter
 //    private static float viewportScaleY = 0f;
 
     //debug only
-    private static ImVec2 debugMaxAvailSize = new ImVec2();
+    private  ImVec2 debugMaxAvailSize = new ImVec2();
 
-    public static void imgui() {
+    public  void imgui() {
         ImGui.begin("Game Viewport", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
 
         viewportSize = getMaxViewportSize();
@@ -37,7 +37,7 @@ public class GameViewWindow {
         ImGui.end();
     }
 
-    private static void setViewportScreenPos(ImVec2 localPos) {
+    private  void setViewportScreenPos(ImVec2 localPos) {
         ImVec2 topLeft = new ImVec2();
         ImGui.getCursorScreenPos(topLeft);
         topLeft.x -= ImGui.getScrollX() + 10;
@@ -47,7 +47,7 @@ public class GameViewWindow {
 
     }
 
-    private static ImVec2 getMaxViewportSize() {
+    private  ImVec2 getMaxViewportSize() {
         //get ImGui available size
         ImVec2 availableSize = new ImVec2();
         ImGui.getContentRegionAvail(availableSize);
@@ -71,7 +71,7 @@ public class GameViewWindow {
         return new ImVec2(aspectWidth, aspectHeight);
     }
 
-    private static ImVec2 getCenteredViewportPos(ImVec2 viewportSize) {
+    private  ImVec2 getCenteredViewportPos(ImVec2 viewportSize) {
         //get ImGui available size
         ImVec2 availableSize = new ImVec2();
         ImGui.getContentRegionAvail(availableSize);
@@ -84,12 +84,12 @@ public class GameViewWindow {
         return viewPos;
     }
 
-    public static float getViewportPosX() { return viewportScreenPos.x;}
-    public static float getViewportPosY() { return viewportScreenPos.y;}
-    public static float getViewportSizeX() { return viewportSize.x;}
-    public static float getViewportSizeY() { return viewportSize.y;}
+    public  float getViewportPosX() { return viewportScreenPos.x;}
+    public  float getViewportPosY() { return viewportScreenPos.y;}
+    public  float getViewportSizeX() { return viewportSize.x;}
+    public  float getViewportSizeY() { return viewportSize.y;}
 
-    public static boolean isInViewport(float posX, float posY) {
+    public  boolean isInViewport(float posX, float posY) {
 
         ImVec2 posInScreenCoords = getVecInScreenCoords(new ImVec2(posX, posY));
         ImVec2 max = new ImVec2(viewportScreenPos.x + viewportSize.x, viewportScreenPos.y + viewportSize.y);
@@ -98,7 +98,7 @@ public class GameViewWindow {
                 posInScreenCoords.y >= viewportScreenPos.y && posInScreenCoords.y < max.y;
     }
 
-    private static ImVec2 getVecInScreenCoords( final ImVec2 inVec) {
+    private  ImVec2 getVecInScreenCoords( final ImVec2 inVec) {
 
         Vector4f normPos = new Vector4f( inVec.x, inVec.y, 0, 1);
         normPos.mul(Window.getScene().getCamera().getWorld2NormalizedScreenMat()); //in GL NDC coords range (-1, 1)

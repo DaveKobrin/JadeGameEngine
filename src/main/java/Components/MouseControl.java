@@ -1,12 +1,9 @@
 package Components;
 
-import Editor.GameViewWindow;
 import Jade.*;
-import Utility.AssetPool;
 import Utility.Settings;
 import org.joml.Vector2f;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
 public class MouseControl extends Component {
@@ -39,20 +36,12 @@ public class MouseControl extends Component {
             Vector2f newPos = new Vector2f(x, y);
             newPos.x = ((int)newPos.x / Settings.TILE_WIDTH) * Settings.TILE_WIDTH;
             newPos.y = ((int)newPos.y / Settings.TILE_HEIGHT) * Settings.TILE_HEIGHT;
-            System.out.println(newPos);
+//            System.out.println(newPos);
             objectHeld.getTransform().setPosition(newPos);
 
-            if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) &&  GameViewWindow.isInViewport(newPos.x, newPos.y)) {
+            if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) &&  Window.getScene().getGameViewWindow().isInViewport(newPos.x, newPos.y)) {
                 detach();
             }
-        } else if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)){
-            int x = (int) MouseListener.getViewportXPos();
-            int y = (int) MouseListener.getViewportYPos();
-            int entID = Window.get().getPickingTexture().readPixel(x,y);
-            System.out.println("x,y : " + x + "," + y + "entityID : " + entID);
-            GameObject go = Window.getScene().getGoByUID(entID);
-            if (go != null)
-                Window.getScene().setActiveGameObject(go);
         }
     }
 }

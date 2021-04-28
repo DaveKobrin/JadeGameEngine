@@ -26,11 +26,12 @@ public class Camera {
     private Matrix4f invProjMatrix;
     @Getter
     private Matrix4f invViewMatrix;
-    @Getter
-    @Setter
+    @Getter     @Setter
     private Vector2f position;
     @Getter
     private Vector2f projectionSize = new Vector2f(WORLD_POS_RIGHT, WORLD_POS_TOP);
+    @Getter     @Setter
+    private float zoom = 1f;
 
 
     public Camera(Vector2f position) {
@@ -43,7 +44,8 @@ public class Camera {
     }
 
     public void adjustProjection() {
-        this.projectionMatrix.setOrtho(WORLD_POS_LEFT, WORLD_POS_RIGHT, WORLD_POS_BOTTOM, WORLD_POS_TOP, NEAR_CLIP, FAR_CLIP);
+        this.projectionSize.set(WORLD_POS_RIGHT * zoom, WORLD_POS_TOP * zoom);
+        this.projectionMatrix.setOrtho(WORLD_POS_LEFT, this.projectionSize.x, WORLD_POS_BOTTOM, this.projectionSize.y, NEAR_CLIP, FAR_CLIP);
         this.projectionMatrix.invert(invProjMatrix);
     }
 
@@ -72,6 +74,8 @@ public class Camera {
         invViewMatrix.mul(invProjMatrix, result);
         return result;
     }
+
+    public void addZoom(float value) { zoom += value; }
 
     public float getWorldSizeX() { return WORLD_POS_RIGHT - WORLD_POS_LEFT; }
     public float getWorldSizeY() { return WORLD_POS_TOP - WORLD_POS_BOTTOM; }

@@ -2,27 +2,20 @@ package scenes;
 
 
 import Components.*;
-import Editor.GameViewWindow;
 import Jade.GameObject;
 import Jade.PreFabs;
-import Jade.Scene;
 import Jade.Transform;
 import Physics2D.PhysicsSystem2D;
 import Physics2D.Primitives.Box2D;
 import Physics2D.Primitives.Circle;
-import Physics2D.RigidBody.IntersectDetector2D;
 import Physics2D.RigidBody.RigidBody2D;
 import Renderer.DebugDrawBatch;
-import Renderer.Texture;
 import Utility.AssetPool;
 import Utility.Color;
 import Utility.Settings;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import imgui.ImGui;
 import imgui.ImVec2;
 import org.joml.Vector2f;
-import org.joml.Vector4f;
 
 /**
  * LevelEditorScene - Scene for the game level editor - currently used for test code
@@ -49,6 +42,7 @@ public class LevelEditorScene extends Scene {
     @Override
     public void update(float dt) {
         super.update(dt);
+        this.camera.adjustProjection();
         LevelEditorComponents.update(dt);
         //System.out.println( "FPS: " + (1.0f/dt));
 //---------test code ----------------
@@ -82,12 +76,8 @@ public class LevelEditorScene extends Scene {
 
         LevelEditorComponents.addComponent(new MouseControl());
         LevelEditorComponents.addComponent(new GridLines());
+        LevelEditorComponents.addComponent(new EditorCamera(this.getCamera()));
 
-        if (this.levelLoaded) {
-            if (this.gameObjects.size() > 0)
-                this.activeGameObject = this.gameObjects.get(0);
-//            return;
-        }
 
         //=====================================================
         //          test code

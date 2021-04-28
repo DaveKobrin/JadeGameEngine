@@ -16,6 +16,7 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import scenes.LevelEditorScene;
 import scenes.LevelScene;
+import scenes.Scene;
 
 import java.nio.IntBuffer;
 import java.util.Objects;
@@ -275,6 +276,8 @@ public class Window {
 
     protected void endFrame(){
         glfwSwapBuffers(glfwWindow);
+
+        MouseListener.endFrame();
 
         endTime = (float) glfwGetTime();
         dt = endTime - beginTime;

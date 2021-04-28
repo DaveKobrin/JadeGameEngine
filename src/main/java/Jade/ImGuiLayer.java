@@ -1,11 +1,11 @@
 package Jade;
 
 
-import Editor.GameViewWindow;
+;
+import Editor.PropertiesWindow;
 import imgui.ImFont;
 import imgui.ImFontAtlas;
 import imgui.ImGui;
-import imgui.ImVec2;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.flag.ImGuiStyleVar;
@@ -14,6 +14,7 @@ import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImBoolean;
 import org.lwjgl.glfw.GLFW;
+import scenes.Scene;
 
 /**
  * ImGuiLayer - Abstraction layer for the java binding of Dear ImGui from SpaiR/imgui-java
@@ -25,6 +26,7 @@ public class ImGuiLayer {
     private Window window;
     private ImFont imFontTest;
     private ImFont imFontDefault;
+    private PropertiesWindow propertiesWindow = new PropertiesWindow();
 
 
     ImGuiLayer() {
@@ -85,20 +87,13 @@ public class ImGuiLayer {
 
     protected void process(float dt, Scene currentScene) {
         ImGui.pushFont(imFontTest);
-        currentScene.objectImGui();
         currentScene.imGui();
-        GameViewWindow.imgui();
+        Window.getScene().getGameViewWindow().imgui();
+        propertiesWindow.update(dt, currentScene);
+        propertiesWindow.imGui();
         ImGui.popFont();
     }
 
-//    protected void process() {
-//        ImGui.pushFont(imFontDefault);
-//        ImGui.text("Hello, World! ImGui is working!!!");
-//        ImGui.popFont();
-//        ImGui.pushFont(imFontTest);
-//        ImGui.text("different font testing");
-//        ImGui.popFont();
-//    }
     protected void preProcess() {
         //setup docking
         setupDockspace();
@@ -125,14 +120,6 @@ public class ImGuiLayer {
 
         ImGui.begin("Dockspace", new ImBoolean(true), windowFlags);
         ImGui.popStyleVar(2);
-// -------------debug testing
-//        ImVec2 availableSize = new ImVec2();
-//        ImGui.getContentRegionAvail(availableSize);
-//
-//        ImVec2 currPos = new ImVec2();
-//        ImGui.getCursorScreenPos(currPos);
-//        System.out.println("dockspace window dim from (" + currPos.x + ", " + currPos.y + " ) to (" + availableSize.x +", " + availableSize.y + ")");
-//----------------------------test end
 
         //dockspace
         ImGui.dockSpace(ImGui.getID("dockspace"));
