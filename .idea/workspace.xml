@@ -4,15 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d8ec6f61-f19e-493c-8e97-f85422862836" name="Default Changelist" comment="added .gitignore which contains the .gradle folder">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="d8ec6f61-f19e-493c-8e97-f85422862836" name="Default Changelist" comment="using .gitignore to trim the files committed in repo">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Balls2D.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -252,7 +246,14 @@
       <option name="project" value="LOCAL" />
       <updated>1640829336666</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="using .gitignore to trim the files committed in repo">
+      <created>1640830651996</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1640830651996</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -277,7 +278,8 @@
     <MESSAGE value="camera controls added for level editor scene" />
     <MESSAGE value="Adding some missing files" />
     <MESSAGE value="added .gitignore which contains the .gradle folder" />
-    <option name="LAST_COMMIT_MESSAGE" value="added .gitignore which contains the .gradle folder" />
+    <MESSAGE value="using .gitignore to trim the files committed in repo" />
+    <option name="LAST_COMMIT_MESSAGE" value="using .gitignore to trim the files committed in repo" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
