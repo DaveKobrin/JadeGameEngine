@@ -6,6 +6,7 @@ import Editor.GameViewWindow;
 import Jade.Camera;
 import Jade.Component;
 import Jade.GameObject;
+import Jade.Transform;
 import Renderer.Renderer;
 import Utility.AssetPool;
 import com.google.gson.Gson;
@@ -117,6 +118,13 @@ public abstract class Scene {
          */
     }
 
+    public GameObject createGameObject(String name) {
+        GameObject go = new GameObject(name);
+        go.addComponent(new Transform());
+        go.setTransform(go.getComponent(Transform.class));
+        return go;
+    }
+
     public void load() {
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
@@ -160,17 +168,22 @@ public abstract class Scene {
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .create();
+        List<GameObject> objects2Serialize = new ArrayList<>();
+        for (GameObject obj : this.gameObjects) {
+            if (obj.isDoSerialize())
+                objects2Serialize.add(obj);
+        }
 
-       try (FileWriter outfile = new FileWriter(new File(levelFileName),false)){
-           outfile.write(gson.toJson(this.gameObjects));
-       } catch (IOException e) {
+        try (FileWriter outfile = new FileWriter(new File(levelFileName),false)){
+           outfile.write(gson.toJson(objects2Serialize));
+        } catch (IOException e) {
            e.printStackTrace();
-       }
+        }
     }
 
     public GameObject getGoByUID(int uid) {
         //returns the gameObject with the uid or null if not found
-        for (GameObject go : gameObjects) {
+    for (GameObject go : gameObjects) {
             if (go.getUid() == uid)
                 return go;
         }

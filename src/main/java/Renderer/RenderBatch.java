@@ -3,6 +3,8 @@ package Renderer;
 import Components.SpriteRenderer;
 import Jade.Window;
 import Utility.AssetPool;
+import Utility.JMath;
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
@@ -112,6 +114,9 @@ public class RenderBatch implements Comparable<RenderBatch> {
         boolean rebuffData = false;
         for (int i = 0; i < numSprites; i++) {
             SpriteRenderer spr = sprites[i];
+            if (spr.gameObject.getTransform().getZIndex()==0){
+                System.out.println("breakpoint here");
+            }
             if (spr.isChanged()) {
                 loadVertexProperties(i);
                 spr.resetChanged();
@@ -203,6 +208,13 @@ public class RenderBatch implements Comparable<RenderBatch> {
         }
         Vector2f[] texCoords = sprite.getTexCoords();
 
+        boolean isRotated = !JMath.compare(sprite.gameObject.getTransform().getRotation(), 0f);
+        Matrix4f transformMat = new Matrix4f().identity();
+        if (isRotated) {
+            transformMat.translate(sprite.gameObject.getTransform().getPosition().x, sprite.gameObject.getTransform().getPosition().y, 0f );
+            transformMat.rotate((float) Math.toRadians(sprite.gameObject.getTransform().getRotation()),0f,0f, 1f);
+            transformMat.scale(sprite.gameObject.getTransform().getScale().x, sprite.gameObject.getTransform().getScale().y, 1f);
+        }
 
         // add vertices with correct properties
         float x = 1.0f;
@@ -233,8 +245,14 @@ public class RenderBatch implements Comparable<RenderBatch> {
 
             // load data
             // position x, y
-            vertices[0 + offset] = sprite.gameObject.getTransform().getPosition().x + (x * sprite.gameObject.getTransform().getScale().x);
-            vertices[1 + offset] = sprite.gameObject.getTransform().getPosition().y + (y * sprite.gameObject.getTransform().getScale().y);
+            Vector4f position = new Vector4f(sprite.gameObject.getTransform().getPosition().x + (x * sprite.gameObject.getTransform().getScale().x),
+                                             sprite.gameObject.getTransform().getPosition().y + (y * sprite.gameObject.getTransform().getScale().y),
+                                            0f,1f);
+            if (isRotated) {
+                position = new Vector4f(x, y, 0f, 1f).mul(transformMat);
+            }
+            vertices[0 + offset] = position.x;
+            vertices[1 + offset] = position.y;
 
             // color r, g, b, a
             vertices[2 + offset] = color.x;

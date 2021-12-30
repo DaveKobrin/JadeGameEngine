@@ -63,6 +63,7 @@ public class Window {
 
     //imgui
     private String glslVersion = null;
+    @Getter
     private ImGuiLayer imGuiLayer;
 
     private static Scene currentScene = null;

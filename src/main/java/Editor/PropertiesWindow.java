@@ -1,5 +1,6 @@
 package Editor;
 
+import Components.NotPickable;
 import Jade.GameObject;
 import Jade.MouseListener;
 import Jade.Window;
@@ -14,6 +15,7 @@ public class PropertiesWindow {
     @Getter
     @Setter
     protected GameObject activeGameObject = null;
+    private float debounce = 0.2f;
 
     /**
      * imGui() - process UI items specific to the active GameObject
@@ -28,19 +30,21 @@ public class PropertiesWindow {
     }
 
     public void update(float dt, Scene currentScene){
-        if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) && !MouseListener.isDragging()){
+        debounce -= dt;
+        if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) && !MouseListener.isDragging() && debounce < 0) {
+
             if (Window.getScene().getGameViewWindow().isInViewport(MouseListener.getViewportOrthoX(), MouseListener.getViewportOrthoY())) {
                 int x = (int) MouseListener.getViewportXPos();
                 int y = (int) MouseListener.getViewportYPos();
                 int entID = Window.get().getPickingTexture().readPixel(x, y);
-
+                debounce = 0.2f;
                 System.out.println("x,y : " + x + "," + y + "entityID : " + entID);
 
-                GameObject go = currentScene.getGoByUID(entID);
-                if (go != null) {
-                    activeGameObject = go;
-                } else {
+                GameObject pickedObj = currentScene.getGoByUID(entID);
+                if (pickedObj == null) {
                     activeGameObject = null;
+                } else if (pickedObj.getComponent(NotPickable.class) == null) {
+                    activeGameObject = pickedObj;
                 }
             }
         }

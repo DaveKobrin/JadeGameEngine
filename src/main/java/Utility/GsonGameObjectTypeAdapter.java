@@ -13,14 +13,13 @@ public class GsonGameObjectTypeAdapter implements JsonDeserializer<GameObject> {
         JsonObject jsonObject = json.getAsJsonObject();
         String name = jsonObject.get("name").getAsString();
         JsonArray components = jsonObject.getAsJsonArray("components");
-        Transform transform = context.deserialize(jsonObject.get("transform"), Transform.class);
-        int zIndex = context.deserialize(jsonObject.get("zIndex"), int.class);
 
-        GameObject go = new GameObject(name,transform,zIndex);
+        GameObject go = new GameObject(name);
         for(JsonElement element : components) {
             Component component = context.deserialize(element, Component.class);
             go.addComponent(component);
         }
+        go.setTransform(go.getComponent(Transform.class));
         return go;
     }
 }
