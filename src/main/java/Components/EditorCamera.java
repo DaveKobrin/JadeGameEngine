@@ -62,9 +62,9 @@ public class EditorCamera extends Component {
             levelEditorCamera.setZoom(levelEditorCamera.getZoom() + ((1f - levelEditorCamera.getZoom()) * lerpTime));
             lerpTime += 0.1f * dt;
 
-            if (Math.abs(levelEditorCamera.getPosition().x) <= 5f && Math.abs(levelEditorCamera.getPosition().y) <= 5f) {
+            if (Math.abs(levelEditorCamera.getPosition().x) <= 5f && Math.abs(levelEditorCamera.getPosition().y) <= 5f && (Math.abs(1f - levelEditorCamera.getZoom()) < 0.1f)) {
                 levelEditorCamera.setPosition(new Vector2f());
-                levelEditorCamera.setZoom(1f);
+                levelEditorCamera.setZoom(1.0f);
                 resetting = false;
                 lerpTime = 0f;
             }

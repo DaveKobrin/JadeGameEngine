@@ -1,6 +1,9 @@
 package Jade;
 
 import com.google.gson.annotations.JsonAdapter;
+import imgui.ImGui;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,15 +19,19 @@ public class GameObject {
     private int uid = -1;   //the universal ID for this game object
 
     private String name;
-    protected Transform transform;
-    private int zIndex = 0;
+    @Getter @Setter
+    protected transient Transform transform;
+//    private int zIndex = 0;
     private List<Component> components = new ArrayList<>();
+    @Getter
+    private boolean doSerialize = true;
 
 
-    public GameObject(String name, Transform transform, int zIndex) {
+    public GameObject(String name) {
+//            public GameObject(String name, Transform transform, int zIndex) {
         this.name = name;
-        this.transform = new Transform(transform);
-        this.zIndex = zIndex;
+//        this.transform = new Transform(transform);
+//        this.zIndex = zIndex;
         this.uid = ID_COUNTER++;
     }
     public <T extends Component> T getComponent(Class<T> componentClass) {
@@ -72,22 +79,19 @@ public class GameObject {
 
     public void imGui() {
         for (Component c : components) {
-            c.imGui();
+            if(ImGui.collapsingHeader(c.getClass().getSimpleName()))
+                c.imGui();
         }
     }
 
-    public Transform getTransform() {
-        return transform;
-    }
+//    public int getzIndex() {
+//        return this.zIndex;
+//    }
 
-    public int getzIndex() {
-        return this.zIndex;
-    }
-
-    public void setzIndex(int zIndex) {
-        //TODO must move associated sprite to different render batch with correct z index
-        this.zIndex = zIndex;
-    }
+//    public void setzIndex(int zIndex) {
+//        //TODO must move associated sprite to different render batch with correct z index
+//        this.zIndex = zIndex;
+//    }
 
     public static void setIdCounter(int newMinCounter) {
         ID_COUNTER = newMinCounter;
@@ -103,4 +107,9 @@ public class GameObject {
         }
         return maxCompUID;
     }
+
+    public void setNoSerialize(){
+        doSerialize = false;
+    }
+
 }

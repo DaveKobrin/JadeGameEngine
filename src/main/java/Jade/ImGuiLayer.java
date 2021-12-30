@@ -13,6 +13,7 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImBoolean;
+import lombok.Getter;
 import org.lwjgl.glfw.GLFW;
 import scenes.Scene;
 
@@ -26,6 +27,7 @@ public class ImGuiLayer {
     private Window window;
     private ImFont imFontTest;
     private ImFont imFontDefault;
+    @Getter
     private PropertiesWindow propertiesWindow = new PropertiesWindow();
 
 

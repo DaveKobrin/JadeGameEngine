@@ -1,5 +1,6 @@
 package Jade;
 
+import Utility.Color;
 import Utility.TypeClassMap;
 import com.google.gson.annotations.JsonAdapter;
 import imgui.ImGui;
@@ -104,6 +105,15 @@ public abstract class Component {
                         float[] imVec4 = {val4.x, val4.y, val4.z};
                         if (ImGui.dragFloat4(name + ":", imVec4)) {
                             val4.set(imVec4[0], imVec4[1], imVec4[2], imVec4[3]);
+                        }
+                        break;
+                    case COLORS:
+                        value = ((Color.COLORS)value).getAsColor();
+                    case COLOR:
+                        Color color = (Color)value;
+                        float[] imColor = color.getData();
+                        if (ImGui.dragFloat4(name + ":", imColor)){
+                            color.set(imColor);
                         }
                         break;
                     case OBJECT:

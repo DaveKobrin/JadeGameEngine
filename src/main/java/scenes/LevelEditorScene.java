@@ -5,6 +5,7 @@ import Components.*;
 import Jade.GameObject;
 import Jade.PreFabs;
 import Jade.Transform;
+import Jade.Window;
 import Physics2D.PhysicsSystem2D;
 import Physics2D.Primitives.Box2D;
 import Physics2D.Primitives.Circle;
@@ -23,7 +24,8 @@ import org.joml.Vector2f;
 public class LevelEditorScene extends Scene {
 
     private Spritesheet blocks = null;
-    private GameObject LevelEditorComponents = new GameObject("EditorComponents", new Transform(new Vector2f()), 0);
+    private Spritesheet gizmos = null;
+    private GameObject LevelEditorComponents = this.createGameObject("EditorComponents");
 // ------- test code ---------------
     Box2D box2D = new Box2D(new Vector2f(475f,210f), new Vector2f(625f,250f), 0f);
     Circle c1 = new Circle();
@@ -77,7 +79,10 @@ public class LevelEditorScene extends Scene {
         LevelEditorComponents.addComponent(new MouseControl());
         LevelEditorComponents.addComponent(new GridLines());
         LevelEditorComponents.addComponent(new EditorCamera(this.getCamera()));
-
+        LevelEditorComponents.addComponent(new GizmoSystem(gizmos));
+        LevelEditorComponents.addComponent(new TranslateGizmo(gizmos.getSprite(1), Window.get().getImGuiLayer().getPropertiesWindow()));
+        LevelEditorComponents.addComponent(new ScaleGizmo(gizmos.getSprite(2), Window.get().getImGuiLayer().getPropertiesWindow()));
+        LevelEditorComponents.start();
 
         //=====================================================
         //          test code
@@ -155,49 +160,60 @@ public class LevelEditorScene extends Scene {
         AssetPool.addShaderResource("assets/shaders/debug_line2d.glsl");
         AssetPool.addShaderResource("assets/shaders/picking_shader.glsl");
         AssetPool.addTextureResource("assets/textures/decorationsAndBlocks.png");
+        AssetPool.addTextureResource("assets/textures/gizmos.png");
         AssetPool.addSpritesheetResource("assets/textures/decorationsAndBlocks.png",
                 new Spritesheet(AssetPool.getTexture("assets/textures/decorationsAndBlocks.png"),
                         16,16,81,0));
+        AssetPool.addSpritesheetResource("assets/textures/gizmos.png",
+                new Spritesheet(AssetPool.getTexture("assets/textures/gizmos.png"),
+                        24,48,3,0));
         blocks = AssetPool.getSpritesheet("assets/textures/decorationsAndBlocks.png");
+        gizmos = AssetPool.getSpritesheet("assets/textures/gizmos.png");
     }
 
     @Override
     public void imGui() {
+        ImGui.begin("Level Editor Components");
+        {
+            LevelEditorComponents.imGui();
+        }
+        ImGui.end();
+
         ImGui.begin("Test Window");
-
-        // window information
-        ImVec2 windowPos = new ImVec2();
-        ImVec2 windowSize = new ImVec2();
-        ImVec2 itemSpacing = new ImVec2();
-        ImGui.getWindowPos(windowPos);
-        ImGui.getWindowSize(windowSize);
-        ImGui.getStyle().getItemSpacing(itemSpacing);
-        float windowX2 = windowPos.x + windowSize.x;
-
-
-        // adding items into the window
-        for (int i = 0; i < blocks.getSize(); i++) {
-            Sprite sprite = blocks.getSprite(i);
-            Vector2f buttonSize = new Vector2f(sprite.getWidth() * 2, sprite.getHeight() * 2);
-            int texID = sprite.getTexture().getTexID();
-            Vector2f[] texUV = sprite.getTexCoords();
-
-            ImGui.pushID(i);
-            if (ImGui.imageButton(texID,buttonSize.x,buttonSize.y,texUV[3].x,texUV[3].y,texUV[1].x,texUV[1].y)) {
-                GameObject object = PreFabs.generateBlock(sprite, Settings.TILE_WIDTH, Settings.TILE_HEIGHT);
-                LevelEditorComponents.getComponent(MouseControl.class).attach(object);
-            }
-            ImGui.popID();
+        {
+            // window information
+            ImVec2 windowPos = new ImVec2();
+            ImVec2 windowSize = new ImVec2();
+            ImVec2 itemSpacing = new ImVec2();
+            ImGui.getWindowPos(windowPos);
+            ImGui.getWindowSize(windowSize);
+            ImGui.getStyle().getItemSpacing(itemSpacing);
+            float windowX2 = windowPos.x + windowSize.x;
 
 
-            ImVec2 lastButtonPos = new ImVec2();
-            ImGui.getItemRectMax(lastButtonPos);
-            float nextButtonX2 = lastButtonPos.x + itemSpacing.x + buttonSize.x;
-            if ( i+1 < blocks.getSize() && nextButtonX2 < windowX2 ) {
-                ImGui.sameLine();
+            // adding items into the window
+            for (int i = 0; i < blocks.getSize(); i++) {
+                Sprite sprite = blocks.getSprite(i);
+                Vector2f buttonSize = new Vector2f(sprite.getWidth() * 2, sprite.getHeight() * 2);
+                int texID = sprite.getTexture().getTexID();
+                Vector2f[] texUV = sprite.getTexCoords();
+
+                ImGui.pushID(i);
+                if (ImGui.imageButton(texID, buttonSize.x, buttonSize.y, texUV[3].x, texUV[3].y, texUV[1].x, texUV[1].y)) {
+                    GameObject object = PreFabs.generateBlock(sprite, Settings.TILE_WIDTH, Settings.TILE_HEIGHT);
+                    LevelEditorComponents.getComponent(MouseControl.class).attach(object);
+                }
+                ImGui.popID();
+
+
+                ImVec2 lastButtonPos = new ImVec2();
+                ImGui.getItemRectMax(lastButtonPos);
+                float nextButtonX2 = lastButtonPos.x + itemSpacing.x + buttonSize.x;
+                if (i + 1 < blocks.getSize() && nextButtonX2 < windowX2) {
+                    ImGui.sameLine();
+                }
             }
         }
-
         ImGui.end();
     }
 

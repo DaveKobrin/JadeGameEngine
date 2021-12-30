@@ -154,6 +154,28 @@ public class DebugDrawBatch {
     //---------------------------------------------------------------------------------------------------
     //              Add Box2D to batch
     //---------------------------------------------------------------------------------------------------
+    public static void addBoxCorners(final Vector2f corner1, final Vector2f corner2, final Color color, int lifetime) {
+        Vector2f lowerLeft = new Vector2f(Math.min(corner1.x, corner2.x), Math.min(corner1.y, corner2.y));
+        Vector2f upperRight = new Vector2f(Math.max(corner1.x, corner2.x), Math.max(corner1.y, corner2.y));
+        Vector2f lowerRight = new Vector2f(upperRight.x, lowerLeft.y);
+        Vector2f upperLeft = new Vector2f(lowerLeft.x, upperRight.y);
+
+        Vector2f[] vertices  = { lowerLeft, lowerRight, upperRight, upperLeft };
+
+        addLine2D(vertices[0], vertices[1], color, lifetime);
+        addLine2D(vertices[1], vertices[2], color, lifetime);
+        addLine2D(vertices[2], vertices[3], color, lifetime);
+        addLine2D(vertices[3], vertices[0], color, lifetime);
+    }
+
+    public static void addBoxCorners(final Vector2f corner1, final Vector2f corner2, final Color color){
+        addBoxCorners(corner1, corner2, color, 1);
+    }
+
+    public static void addBoxCorners(final Vector2f corner1, final Vector2f corner2) {
+        addBoxCorners(corner1, corner2, Color.COLORS.RED.getAsColor(), 1);
+    }
+
     public static void addBox2D(Vector2f center, Vector2f size, float rotation, Color color, int lifetime) {
         Vector2f lowerLeft = new Vector2f(center).sub(new Vector2f(size).div(2.0f));
         Vector2f upperRight = new Vector2f(center).add(new Vector2f(size).div(2.0f));

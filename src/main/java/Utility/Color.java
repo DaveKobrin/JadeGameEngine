@@ -11,18 +11,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Color implements Cloneable {
     public enum COLORS {
-        RED(1.0f, 0.0f, 0.0f, 1.0f),
-        GREEN(0.0f, 1.0f, 0.0f, 1.0f),
-        CYAN(0.0f,1.0f,1.0f,1.0f),
-        BLUE(0.0f, 0.0f, 1.0f, 1.0f),
-        PURPLE(0.5f,0.0f,1.0f,1.0f),
-        MAGENTA(1.0f, 0.0f,1.0f,1.0f),
-        YELLOW(1.0f,1.0f,0.0f,1.0f),
-        ORANGE(1.0f,0.5f,0.0f,1.0f),
-        DARK_GRAY(0.2f,0.2f,0.2f,1.0f),
-        MID_GRAY(0.4f, 0.4f,0.4f,1.0f),
-        LIGHT_GRAY(0.7f, 0.7f,0.7f,1.0f),
-        WHITE(1.0f,1.0f,1.0f,1.0f);
+        RED         (1.0f,0.0f,0.0f,1.0f),
+        GREEN       (0.0f,1.0f,0.0f,1.0f),
+        CYAN        (0.0f,1.0f,1.0f,1.0f),
+        BLUE        (0.0f,0.0f,1.0f,1.0f),
+        PURPLE      (0.5f,0.0f,1.0f,1.0f),
+        MAGENTA     (1.0f,0.0f,1.0f,1.0f),
+        YELLOW      (1.0f,1.0f,0.0f,1.0f),
+        ORANGE      (1.0f,0.5f,0.0f,1.0f),
+        DARK_GRAY   (0.2f,0.2f,0.2f,1.0f),
+        MID_GRAY    (0.4f,0.4f,0.4f,1.0f),
+        LIGHT_GRAY  (0.7f,0.7f,0.7f,1.0f),
+        WHITE       (1.0f,1.0f,1.0f,1.0f),
+        TRANSPARENT (0.0f,0.0f,0.0f,0.0f);
 
 
         float r, g, b, a;
@@ -51,10 +52,7 @@ public class Color implements Cloneable {
     }
 
     public Color(final float red, final float green, final float blue, final float alpha) {
-        data[0] = red;
-        data[1] = green;
-        data[2] = blue;
-        data[3] = alpha;
+        set(red, green, blue, alpha);
     }
 
     public final void set(final float red, final float green, final float blue, final float alpha) {

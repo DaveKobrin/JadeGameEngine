@@ -3,6 +3,7 @@ package Components;
 import Jade.Component;
 import Jade.Transform;
 import Renderer.Texture;
+import Utility.Color;
 import imgui.ImGui;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
@@ -79,6 +80,10 @@ public class SpriteRenderer extends Component {
             this.color.set(color);
             this.changed = true;
         }
+    }
+
+    public void setColor(Color color) {
+        setColor(new Vector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()));
     }
 
     /**

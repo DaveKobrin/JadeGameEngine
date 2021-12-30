@@ -23,6 +23,9 @@ public class TypeClassMap {
         VECTOR3F,
         VECTOR4F,
 
+        COLOR,
+        COLORS,
+
         OBJECT;
     }
 
@@ -39,6 +42,8 @@ public class TypeClassMap {
             Map.entry(Types.VECTOR2F , Vector2f.class),
             Map.entry(Types.VECTOR3F , Vector3f.class),
             Map.entry(Types.VECTOR4F , Vector4f.class),
+            Map.entry(Types.COLOR    , Color.class),
+            Map.entry(Types.COLORS   , Color.COLORS.class),
             Map.entry(Types.OBJECT   , Object.class)
     );
 
